@@ -1,6 +1,12 @@
-[package]
-name = "vcon-rs"
-version = "0.1.0"
+[workspace]
+members = ["vcon-types"]
+resolver = "2"
+
+[workspace.package]
+version = "0.0.1"
+description = "VCON"
+authors = []
 edition = "2021"
 
-[dependencies]
+[workspace.lints.rust]
+unsafe_code = "forbid"

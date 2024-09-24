@@ -1,0 +1,97 @@
+//! see https://ietf-wg-vcon.github.io/draft-ietf-vcon-vcon-container/draft-ietf-vcon-vcon-container.html
+
+// TODO: remove once finished
+#![allow(dead_code)]
+
+mod address;
+mod analysis;
+mod attachment;
+mod body;
+mod content;
+mod date;
+mod dialog;
+mod event;
+mod extension_object;
+mod mime;
+mod party;
+mod reference;
+mod signature;
+mod url;
+mod uuid;
+mod version;
+
+#[cfg(ser)]
+pub use extension_object::ExtensionObject;
+pub use {
+    address::CivicAddress,
+    analysis::AnalysisObject,
+    attachment::AttachmentObject,
+    body::InlineContent,
+    content::{Content, ContentParameters, UrlReferencedContent},
+    date::Date,
+    dialog::{Dialog, DialogIndex, DialogObject, DialogParties},
+    event::{Event, PartyEvent},
+    mime::Mime,
+    party::PartyObject,
+    reference::{RedactedReference, VconReference},
+    signature::Signature,
+    url::Url,
+    uuid::Uuid,
+    version::VconVersion,
+};
+
+#[cfg(feature = "json")]
+type AnyValue = serde_json::Value;
+
+#[cfg(feature = "cbor")]
+type AnyValue = ciborium::Value;
+
+#[cfg(all(feature = "cbor", feature = "json"))]
+compile_error!("feature \"cbor\" and feature \"json\" cannot be enabled at the same time");
+
+type PartyIndex = u32;
+
+#[derive(Debug, Clone, Hash, Eq, PartialEq, derive_more::From, derive_more::Into)]
+#[cfg_attr(ser, derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "builder", derive(derive_builder::Builder))]
+pub struct Vcon {
+    #[cfg_attr(ser, serde(flatten))]
+    pub version: VconVersion,
+    #[cfg_attr(ser, serde(flatten))]
+    pub uuid: Uuid,
+    #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
+    pub subject: Option<String>,
+    #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
+    pub created_at: Option<Date>,
+    #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
+    pub updated_at: Option<Date>,
+    #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
+    pub redacted: Option<OrEmpty<RedactedReference>>,
+    // FIXME: typo in draft
+    #[cfg_attr(
+        ser,
+        serde(rename = "ammended", skip_serializing_if = "Option::is_none")
+    )]
+    pub amended: Option<OrEmpty<RedactedReference>>,
+    #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
+    pub group: Option<Vec<VconReference>>,
+    #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
+    pub parties: Option<Vec<PartyObject>>,
+    #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
+    pub dialog: Option<Vec<DialogObject>>,
+    #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
+    pub attachments: Option<Vec<AttachmentObject>>,
+    #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
+    pub analysis: Option<Vec<AnalysisObject>>,
+    #[cfg(ser)]
+    #[cfg_attr(ser, serde(flatten))]
+    pub extension_object: ExtensionObject,
+}
+
+/// Flatten at declaration site
+#[derive(Debug, Clone, Hash, Eq, PartialEq)]
+#[cfg_attr(ser, derive(serde::Serialize, serde::Deserialize), serde(untagged))]
+pub enum OrEmpty<T> {
+    Some(T),
+    None(AnyValue),
+}

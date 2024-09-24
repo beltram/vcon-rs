@@ -1,0 +1,36 @@
+[package]
+name = "vcon-types"
+edition = "2021"
+
+[build-dependencies]
+cfg_aliases = "0.2"
+
+[dependencies]
+url = "2.5"
+uuid = { version = "1.10", features = ["v8", "serde"] }
+derive_more = { version = "1.0", features = ["from", "into", "deref", "deref_mut"] }
+time = "0.3"
+# TODO: probably only for json feature
+base64 = "0.22"
+derive_builder = { version = "0.20", optional = true }
+sha2 = "0.10"
+paste = "1.0"
+
+serde = { version = "1.0", optional = true }
+serde_with = { version = "3.9", optional = true, features = ["base64"] }
+serde-big-array = { version = "0.5", optional = true }
+strum = { version = "0.26", optional = true }
+strum_macros = "0.26"
+serde_json = { version = "1.0", optional = true }
+ciborium = { version = "0.2", optional = true }
+
+[dev-dependencies]
+vcon-types = { path = "./", features = ["json"] }
+serde_json = "1.0"
+
+[features]
+default = ["serde", "builder", "json"]
+builder = ["dep:derive_builder"]
+json = ["serde", "dep:serde_json"]
+cbor = ["serde", "dep:ciborium"]
+serde = ["dep:serde", "dep:serde_with", "dep:serde-big-array", "dep:strum", "strum/strum_macros", "url/serde", "uuid/serde", "time/serde", "time/formatting", "time/parsing", "serde_with/base64"]

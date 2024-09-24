@@ -1,0 +1,55 @@
+{
+  "vcon": "0.0.1",
+  "group": [],
+  "parties": [
+    {
+      "mailto": "a@example.com",
+      "name": "Alice"
+    },
+    {
+      "mailto": "b@example.com",
+      "name": "Bob"
+    }
+  ],
+  "dialog": [
+    {
+      "type": "text",
+      "start": "2022-09-23T23:24:59Z",
+      "duration": 0,
+      "parties": [0, 1],
+      "mimetype": "text/plain",
+      "encoding": "none",
+      "body": "Hi Bob:"
+    },
+    {
+      "type": "text",
+      "start": "2022-09-23T23:34:32Z",
+      "duration": 0,
+      "parties": [
+        1,
+        0
+      ],
+      "mimetype": "text/plain; charset=UTF-8",
+      "encoding": "none",
+      "body": "Hi Alice:\nAll is f [...]"
+    },
+    {
+      "type": "text",
+      "start": "2022-09-23T23:38:12Z",
+      "duration": 0,
+      "parties": [
+        0,
+        1
+      ],
+      "mimetype": "text/plain",
+      "encoding": "none",
+      "body": "Awesome!\n\n    On Friday, September 23, 2022, 23 [...]"
+    }
+  ],
+  "analysis": [],
+  "attachments": [],
+  "created_at": "2023-10-20T23:36:51.45Z",
+  "redacted": {},
+  "subject": "Account issue followup",
+  "uuid": "018b4f72-e3fb-8770-b9a2-279e0d16bc46"
+}
