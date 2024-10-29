@@ -108,54 +108,55 @@ impl serde::Serialize for Signature {
 }
 
 #[cfg(ser)]
-struct SignatureVisitor;
-
-#[cfg(ser)]
-impl<'de> serde::de::Visitor<'de> for SignatureVisitor {
-    type Value = Signature;
-
-    fn expecting(&self, formatter: &mut core::fmt::Formatter) -> core::fmt::Result {
-        formatter.write_str("a Map of Signature with content and alg")
-    }
-
-    fn visit_map<A: serde::de::MapAccess<'de>>(self, mut map: A) -> Result<Self::Value, A::Error> {
-        use base64::Engine as _;
-        use serde::de::Error as _;
-
-        let (_, alg) = map
-            .next_entry::<String, SignatureAlg>()?
-            .ok_or(A::Error::custom("Invalid Signature alg serialization"))?;
-        let (_, signature) = map
-            .next_entry::<String, String>()?
-            .ok_or(A::Error::custom("Invalid BinaryBody content serialization"))?;
-        let signature = Signature::B64
-            .decode(signature.as_bytes())
-            .map_err(|_| A::Error::custom("Signature not Base64 encoded"))?;
-        Ok(match alg {
-            SignatureAlg::Sha256 => Self::Value::Sha256 {
-                signature: signature.try_into().map_err(|_| {
-                    A::Error::custom("Expected a SHA-256 signature to be 32 bytes long")
-                })?,
-            },
-            SignatureAlg::Sha384 => {
-                let signature = signature.try_into().map_err(|_| {
-                    A::Error::custom("Expected a SHA-384 signature to be 48 bytes long")
-                })?;
-                Self::Value::Sha384 { signature }
-            }
-            SignatureAlg::Sha512 => {
-                let signature = signature.try_into().map_err(|_| {
-                    A::Error::custom("Expected a SHA-512 signature to be 64 bytes long")
-                })?;
-                Self::Value::Sha512 { signature }
-            }
-        })
-    }
-}
-
-#[cfg(ser)]
 impl<'de> serde::Deserialize<'de> for Signature {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Signature, D::Error> {
+        struct SignatureVisitor;
+
+        impl<'de> serde::de::Visitor<'de> for SignatureVisitor {
+            type Value = Signature;
+
+            fn expecting(&self, formatter: &mut core::fmt::Formatter) -> core::fmt::Result {
+                formatter.write_str("a Map of Signature with content and alg")
+            }
+
+            fn visit_map<A: serde::de::MapAccess<'de>>(
+                self,
+                mut map: A,
+            ) -> Result<Self::Value, A::Error> {
+                use base64::Engine as _;
+                use serde::de::Error as _;
+
+                let (_, alg) = map
+                    .next_entry::<String, SignatureAlg>()?
+                    .ok_or(A::Error::custom("Invalid Signature alg serialization"))?;
+                let (_, signature) = map
+                    .next_entry::<String, String>()?
+                    .ok_or(A::Error::custom("Invalid BinaryBody content serialization"))?;
+                let signature = Signature::B64
+                    .decode(signature.as_bytes())
+                    .map_err(|_| A::Error::custom("Signature not Base64 encoded"))?;
+                Ok(match alg {
+                    SignatureAlg::Sha256 => Self::Value::Sha256 {
+                        signature: signature.try_into().map_err(|_| {
+                            A::Error::custom("Expected a SHA-256 signature to be 32 bytes long")
+                        })?,
+                    },
+                    SignatureAlg::Sha384 => {
+                        let signature = signature.try_into().map_err(|_| {
+                            A::Error::custom("Expected a SHA-384 signature to be 48 bytes long")
+                        })?;
+                        Self::Value::Sha384 { signature }
+                    }
+                    SignatureAlg::Sha512 => {
+                        let signature = signature.try_into().map_err(|_| {
+                            A::Error::custom("Expected a SHA-512 signature to be 64 bytes long")
+                        })?;
+                        Self::Value::Sha512 { signature }
+                    }
+                })
+            }
+        }
+
         deserializer.deserialize_map(SignatureVisitor)
     }
 }

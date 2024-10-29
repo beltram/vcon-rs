@@ -118,78 +118,76 @@ impl serde::Serialize for InlineContent {
 }
 
 #[cfg(ser)]
-struct BinaryBodyVisitor;
-
-#[cfg(ser)]
-impl<'de> serde::de::Visitor<'de> for BinaryBodyVisitor {
-    type Value = InlineContent;
-
-    fn expecting(&self, formatter: &mut core::fmt::Formatter) -> core::fmt::Result {
-        formatter.write_str("a Map of BinaryBody with content and encoding")
-    }
-
-    fn visit_map<A: serde::de::MapAccess<'de>>(self, mut map: A) -> Result<Self::Value, A::Error> {
-        use serde::de::Error as _;
-        let (_, encoding) = map
-            .next_entry::<String, BodyEncoding>()?
-            .ok_or(A::Error::custom(
-                "Invalid BinaryBody encoding serialization",
-            ))?;
-        Ok(match encoding {
-            BodyEncoding::Base64Url => {
-                use base64::Engine as _;
-                use serde::de::Error as _;
-                #[cfg(feature = "json")]
-                {
-                    let (_, value) = map
-                        .next_entry::<String, String>()?
-                        .ok_or(A::Error::custom("Invalid Body serialization"))?;
-                    let value = InlineContent::B64
-                        .decode(&value)
-                        .map_err(|e| A::Error::custom(format!("{e:?}")))?;
-                    Self::Value::BinaryBase64Url(value)
-                }
-                #[cfg(feature = "cbor")]
-                {
-                    let (_, value) = map
-                        .next_entry::<String, ciborium::tag::Required<ciborium::Value, BASE_64_URL_TAG>>()?
-                        .ok_or(A::Error::custom("Invalid Body serialization"))?;
-                    let value = value
-                        .0
-                        .into_bytes()
-                        .map_err(|_| A::Error::custom("Binary Body should be bytes"))?;
-                    let value = InlineContent::B64
-                        .decode(value)
-                        .map_err(|e| A::Error::custom(format!("{e:?}")))?;
-                    Self::Value::BinaryBase64Url(value)
-                }
-            }
-            BodyEncoding::None => {
-                #[cfg(feature = "json")]
-                {
-                    let (_, value) = map
-                        .next_entry::<String, String>()?
-                        .ok_or(A::Error::custom("Invalid Body serialization"))?;
-                    Self::Value::TextNone(value)
-                }
-                #[cfg(feature = "cbor")]
-                {
-                    let (_, value) = map
-                        .next_entry::<String, String>()?
-                        .ok_or(A::Error::custom("Invalid Body serialization"))?;
-                    Self::Value::TextNone(value)
-                }
-            }
-            BodyEncoding::Json => unimplemented!(),
-        })
-    }
-}
-
-#[cfg(ser)]
 impl<'de> serde::Deserialize<'de> for InlineContent {
     fn deserialize<D: serde::Deserializer<'de>>(
         deserializer: D,
     ) -> Result<InlineContent, D::Error> {
+        struct BinaryBodyVisitor;
+
+        impl<'de> serde::de::Visitor<'de> for BinaryBodyVisitor {
+            type Value = InlineContent;
+
+            fn expecting(&self, formatter: &mut core::fmt::Formatter) -> core::fmt::Result {
+                formatter.write_str("a Map of BinaryBody with content and encoding")
+            }
+
+            fn visit_map<A: serde::de::MapAccess<'de>>(self, mut map: A) -> Result<Self::Value, A::Error> {
+                use serde::de::Error as _;
+                let (_, encoding) = map
+                    .next_entry::<String, BodyEncoding>()?
+                    .ok_or(A::Error::custom(
+                        "Invalid BinaryBody encoding serialization",
+                    ))?;
+                Ok(match encoding {
+                    BodyEncoding::Base64Url => {
+                        use base64::Engine as _;
+                        use serde::de::Error as _;
+                        #[cfg(feature = "json")]
+                        {
+                            let (_, value) = map
+                                .next_entry::<String, String>()?
+                                .ok_or(A::Error::custom("Invalid Body serialization"))?;
+                            let value = InlineContent::B64
+                                .decode(&value)
+                                .map_err(|e| A::Error::custom(format!("{e:?}")))?;
+                            Self::Value::BinaryBase64Url(value)
+                        }
+                        #[cfg(feature = "cbor")]
+                        {
+                            let (_, value) = map
+                                .next_entry::<String, ciborium::tag::Required<ciborium::Value, BASE_64_URL_TAG>>()?
+                                .ok_or(A::Error::custom("Invalid Body serialization"))?;
+                            let value = value
+                                .0
+                                .into_bytes()
+                                .map_err(|_| A::Error::custom("Binary Body should be bytes"))?;
+                            let value = InlineContent::B64
+                                .decode(value)
+                                .map_err(|e| A::Error::custom(format!("{e:?}")))?;
+                            Self::Value::BinaryBase64Url(value)
+                        }
+                    }
+                    BodyEncoding::None => {
+                        #[cfg(feature = "json")]
+                        {
+                            let (_, value) = map
+                                .next_entry::<String, String>()?
+                                .ok_or(A::Error::custom("Invalid Body serialization"))?;
+                            Self::Value::TextNone(value)
+                        }
+                        #[cfg(feature = "cbor")]
+                        {
+                            let (_, value) = map
+                                .next_entry::<String, String>()?
+                                .ok_or(A::Error::custom("Invalid Body serialization"))?;
+                            Self::Value::TextNone(value)
+                        }
+                    }
+                    BodyEncoding::Json => unimplemented!(),
+                })
+            }
+        }
+
         deserializer.deserialize_map(BinaryBodyVisitor)
     }
 }
