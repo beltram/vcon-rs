@@ -10,6 +10,8 @@ mod body;
 mod content;
 mod date;
 mod dialog;
+#[cfg(feature = "doctest")]
+mod doc;
 mod event;
 mod extension_object;
 mod mime;
@@ -19,6 +21,11 @@ mod signature;
 mod url;
 mod uuid;
 mod version;
+
+#[cfg(all(feature = "doctest", feature = "cbor"))]
+pub use doc::expect_cbor_eq;
+#[cfg(all(feature = "doctest", feature = "json"))]
+pub use doc::expect_json_eq;
 
 #[cfg(ser)]
 pub use extension_object::ExtensionObject;
@@ -41,10 +48,29 @@ pub use {
 };
 
 #[cfg(feature = "json")]
-type AnyValue = serde_json::Value;
+#[derive(Default, Debug, Clone, Eq, PartialEq, Hash, serde::Serialize, serde::Deserialize)]
+pub struct JsonAnyValue(serde_json::Value);
 
 #[cfg(feature = "cbor")]
-type AnyValue = ciborium::Value;
+#[derive(Debug, Clone, PartialEq, PartialOrd, serde::Serialize, serde::Deserialize)]
+pub struct CborAnyValue(ciborium::Value);
+
+#[cfg(feature = "cbor")]
+impl Default for CborAnyValue {
+    fn default() -> Self {
+        todo!()
+    }
+}
+
+#[cfg(feature = "cbor")]
+impl Eq for CborAnyValue {}
+
+#[cfg(feature = "cbor")]
+impl std::hash::Hash for CborAnyValue {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        todo!()
+    }
+}
 
 #[cfg(all(feature = "cbor", feature = "json"))]
 compile_error!("feature \"cbor\" and feature \"json\" cannot be enabled at the same time");
@@ -93,5 +119,8 @@ pub struct Vcon {
 #[cfg_attr(ser, derive(serde::Serialize, serde::Deserialize), serde(untagged))]
 pub enum OrEmpty<T> {
     Some(T),
-    None(AnyValue),
+    #[cfg(feature = "json")]
+    None(JsonAnyValue),
+    #[cfg(feature = "cbor")]
+    None(CborAnyValue),
 }

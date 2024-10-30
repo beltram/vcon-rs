@@ -25,12 +25,13 @@ serde_json = { version = "1.0", optional = true }
 ciborium = { version = "0.2", optional = true }
 
 [dev-dependencies]
-vcon-types = { path = "./", features = ["json"] }
+vcon-types = { path = "./", features = ["cbor", "doctest"] }
 serde_json = "1.0"
 
 [features]
-default = ["serde", "builder", "json"]
+default = ["serde", "builder"]
 builder = ["dep:derive_builder"]
 json = ["serde", "dep:serde_json"]
 cbor = ["serde", "dep:ciborium"]
 serde = ["dep:serde", "dep:serde_with", "dep:serde-big-array", "dep:strum", "strum/strum_macros", "url/serde", "uuid/serde", "time/serde", "time/formatting", "time/parsing", "serde_with/base64"]
+doctest = []
