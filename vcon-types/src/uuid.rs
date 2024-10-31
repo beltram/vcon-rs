@@ -11,27 +11,25 @@ use derive_more::{Deref, DerefMut, Into};
 /// # json example
 ///
 /// ```rust
-/// # use serde_json::json;
+/// # #[cfg(feature = "json")] {
 /// # use vcon_types::Uuid;
-/// let actual = Uuid::new(*b"abcdefghijklmnop");
-/// # let actual_ser = serde_json::to_string(&actual).unwrap();
-/// let expected = json!({ "uuid": "61626364-6566-8768-a96a-6b6c6d6e6f70" });
-/// # let expected = serde_json::to_string(&expected).unwrap();
-/// # assert_eq!(expected, actual_ser);
-/// # let deser = serde_json::from_str::<Uuid>(&expected).unwrap();
-/// # assert_eq!(actual, deser);
+/// # use serde_json::json;
+/// # vcon_types::expect_json_eq(
+/// Uuid::new(*b"abcdefghijklmnop"), // actual
+/// json!({ "uuid": "61626364-6566-8768-a96a-6b6c6d6e6f70" }), // expected
+/// # )}
 /// ```
 /// # cbor example
 ///
 /// ```rust
-/// # use ciborium::Value;
+/// # #[cfg(feature = "cbor")] {
 /// # use vcon_types::Uuid;
-/// let actual = Uuid::new(*b"abcdefghijklmnop");
-/// # let actual_ser = Value::serialized(&actual).unwrap();
-/// let expected = Value::Map(vec![(Value::Text("uuid".into()), Value::Text("61626364-6566-8768-a96a-6b6c6d6e6f70".into()))]);
-/// # assert_eq!(expected, actual_ser);
-/// # let deser = Value::deserialized::<Uuid>(&expected).unwrap();
-/// # assert_eq!(actual, deser);
+/// # use ciborium::cbor;
+/// # vcon_types::expect_cbor_eq(
+/// Uuid::new(*b"abcdefghijklmnop"), // actual
+/// cbor!({ "uuid" => "61626364-6566-8768-a96a-6b6c6d6e6f70" }) // expected
+/// # .unwrap(),
+/// # )}
 /// ```
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Into, Deref, DerefMut)]
 #[cfg_attr(ser, derive(serde::Serialize, serde::Deserialize))]

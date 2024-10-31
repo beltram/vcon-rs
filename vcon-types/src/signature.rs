@@ -13,34 +13,28 @@
 /// # json example
 ///
 /// ```rust
-/// # use serde_json::json;
+/// # #[cfg(feature = "json")] {
 /// # use vcon_types::Signature;
-/// # // "abcd" hashed with sha-512
-/// let actual = Signature::try_from("2AIvIGCtbv0perc9zFNVybIUBUsNF3ahNqZp0mp9OxT3OqDQ6_8Z7jMzaPAWS2QZqW2knj5IF1Pn6Wtxa9zLbw".to_string()).unwrap();
-/// # let actual_ser = serde_json::to_string(&actual).unwrap();
-/// let expected = json!({
+/// # use serde_json::json;
+/// # vcon_types::expect_json_eq(
+/// "2AIvIGCtbv0perc9zFNVybIUBUsNF3ahNqZp0mp9OxT3OqDQ6_8Z7jMzaPAWS2QZqW2knj5IF1Pn6Wtxa9zLbw".parse::<Signature>().unwrap(), // actual
+/// json!({
 ///     "alg": "SHA-512",
 ///     "signature": "2AIvIGCtbv0perc9zFNVybIUBUsNF3ahNqZp0mp9OxT3OqDQ6_8Z7jMzaPAWS2QZqW2knj5IF1Pn6Wtxa9zLbw"
-/// });
-/// # let expected = serde_json::to_string(&expected).unwrap();
-/// # assert_eq!(expected, actual_ser);
-/// # let deser = serde_json::from_str::<Signature>(&expected).unwrap();
-/// # assert_eq!(actual, deser);
+/// }), // expected
+/// # )}
 /// ```
 /// # cbor example
 ///
 /// ```rust
-/// # use ciborium::Value;
+/// # #[cfg(feature = "cbor")] {
 /// # use vcon_types::Signature;
-/// let actual = Signature::try_from("2AIvIGCtbv0perc9zFNVybIUBUsNF3ahNqZp0mp9OxT3OqDQ6_8Z7jMzaPAWS2QZqW2knj5IF1Pn6Wtxa9zLbw".to_string()).unwrap();
-/// # let actual_ser = Value::serialized(&actual).unwrap();
-/// let expected = Value::Map(vec![
-///     (Value::Text("alg".into()), Value::Text("SHA-512".into())),
-///     (Value::Text("signature".into()), Value::Text("2AIvIGCtbv0perc9zFNVybIUBUsNF3ahNqZp0mp9OxT3OqDQ6_8Z7jMzaPAWS2QZqW2knj5IF1Pn6Wtxa9zLbw".into()))
-/// ]);
-/// # assert_eq!(expected, actual_ser);
-/// # let deser = Value::deserialized::<Signature>(&actual_ser).unwrap();
-/// # assert_eq!(actual, deser);
+/// # use ciborium::cbor;
+/// # vcon_types::expect_cbor_eq(
+/// "2AIvIGCtbv0perc9zFNVybIUBUsNF3ahNqZp0mp9OxT3OqDQ6_8Z7jMzaPAWS2QZqW2knj5IF1Pn6Wtxa9zLbw".parse::<Signature>().unwrap(), // actual
+/// cbor!({ "alg" => "SHA-512", "signature" => "2AIvIGCtbv0perc9zFNVybIUBUsNF3ahNqZp0mp9OxT3OqDQ6_8Z7jMzaPAWS2QZqW2knj5IF1Pn6Wtxa9zLbw" }) // expected
+/// # .unwrap(),
+/// # )}
 /// ```
 #[derive(Debug, Clone, Hash, Eq, PartialEq)]
 pub enum Signature {
@@ -161,34 +155,34 @@ impl<'de> serde::Deserialize<'de> for Signature {
     }
 }
 
-impl TryFrom<String> for Signature {
-    type Error = Box<dyn std::error::Error>;
+impl std::str::FromStr for Signature {
+    type Err = Box<dyn std::error::Error>;
 
-    fn try_from(value: String) -> Result<Self, Self::Error> {
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
         #[cfg(debug_assertions)]
         Self::verify_hash_output_sizes();
 
         use base64::Engine as _;
         let decoded = Self::B64
-            .decode(value)
-            .map_err(|_| Self::Error::from("signature not base64Url encoded"))?;
+            .decode(s)
+            .map_err(|_| Self::Err::from("signature not base64Url encoded"))?;
         Ok(match decoded.len() {
             Self::SHA256_OUTPUT_SIZE => {
                 let signature = decoded
                     .try_into()
-                    .map_err(|_| Self::Error::from("implementation error"))?;
+                    .map_err(|_| Self::Err::from("implementation error"))?;
                 Self::Sha256 { signature }
             }
             Self::SHA384_OUTPUT_SIZE => {
                 let signature = decoded
                     .try_into()
-                    .map_err(|_| Self::Error::from("implementation error"))?;
+                    .map_err(|_| Self::Err::from("implementation error"))?;
                 Self::Sha384 { signature }
             }
             Self::SHA512_OUTPUT_SIZE => {
                 let signature = decoded
                     .try_into()
-                    .map_err(|_| Self::Error::from("implementation error"))?;
+                    .map_err(|_| Self::Err::from("implementation error"))?;
                 Self::Sha512 { signature }
             }
             _ => return Err("unexpected signature digest length".into()),

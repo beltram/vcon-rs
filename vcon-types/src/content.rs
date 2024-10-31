@@ -1,8 +1,6 @@
-use crate::body::BodyEncoding;
 use crate::{InlineContent, Mime, Signature, Url};
 use derive_builder::Builder;
 use derive_more::{From, Into};
-use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq)]
 #[cfg_attr(ser, derive(serde::Serialize), serde(untagged))]
@@ -28,6 +26,7 @@ impl<'de> serde::Deserialize<'de> for Content {
                 self,
                 mut map: A,
             ) -> Result<Self::Value, A::Error> {
+                use crate::body::BodyEncoding;
                 use serde::de::Error as _;
 
                 let (mut encoding, mut body, mut url, mut signature) = (None, None, None, None);
@@ -100,7 +99,7 @@ pub struct UrlReferencedContent {
 
 /// Flatten at declaration-site
 #[derive(Default, Debug, Clone, Hash, Eq, PartialEq, From, Into)]
-#[cfg_attr(ser, derive(Serialize, Deserialize))]
+#[cfg_attr(ser, derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(feature = "builder", derive(Builder))]
 pub struct ContentParameters {
     #[cfg_attr(ser, serde(flatten, skip_serializing_if = "Option::is_none"))]

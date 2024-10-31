@@ -25,7 +25,7 @@ use derive_more::{Deref, DerefMut, From, Into};
 /// # use ciborium::cbor;
 /// # vcon_types::expect_cbor_eq(
 /// VconVersion::from("v1.0"), // actual
-/// cbor!({"vcon" => "v1.0"}) // expected
+/// cbor!({ "vcon" => "v1.0" }) // expected
 /// # .unwrap(),
 /// # )}
 /// ```
