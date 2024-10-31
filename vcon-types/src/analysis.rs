@@ -1,4 +1,6 @@
-use crate::{Content, ContentParameters, DialogIndex, ExtensionObject};
+#[cfg(ser)]
+use crate::ExtensionObject;
+use crate::{Content, ContentParameters, DialogIndex};
 use derive_more::{From, Into};
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, From, Into)]

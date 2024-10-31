@@ -32,7 +32,10 @@
 /// # use ciborium::cbor;
 /// # vcon_types::expect_cbor_eq(
 /// "2AIvIGCtbv0perc9zFNVybIUBUsNF3ahNqZp0mp9OxT3OqDQ6_8Z7jMzaPAWS2QZqW2knj5IF1Pn6Wtxa9zLbw".parse::<Signature>().unwrap(), // actual
-/// cbor!({ "alg" => "SHA-512", "signature" => "2AIvIGCtbv0perc9zFNVybIUBUsNF3ahNqZp0mp9OxT3OqDQ6_8Z7jMzaPAWS2QZqW2knj5IF1Pn6Wtxa9zLbw" }) // expected
+/// cbor!({ 
+///     "alg" => "SHA-512",
+///     "signature" => "2AIvIGCtbv0perc9zFNVybIUBUsNF3ahNqZp0mp9OxT3OqDQ6_8Z7jMzaPAWS2QZqW2knj5IF1Pn6Wtxa9zLbw" 
+/// }) // expected
 /// # .unwrap(),
 /// # )}
 /// ```

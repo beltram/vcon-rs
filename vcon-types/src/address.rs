@@ -1,3 +1,4 @@
+#[cfg(ser)]
 use crate::ExtensionObject;
 use derive_more::{From, Into};
 

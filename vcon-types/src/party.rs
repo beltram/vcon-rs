@@ -1,4 +1,6 @@
-use crate::{CivicAddress, ExtensionObject, Uuid};
+#[cfg(ser)]
+use crate::ExtensionObject;
+use crate::{CivicAddress, Uuid};
 use derive_more::{From, Into};
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, From, Into)]

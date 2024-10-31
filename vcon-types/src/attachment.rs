@@ -1,4 +1,6 @@
-use crate::{Content, ContentParameters, Date, ExtensionObject, PartyIndex};
+#[cfg(ser)]
+use crate::ExtensionObject;
+use crate::{Content, ContentParameters, Date, PartyIndex};
 use derive_more::{From, Into};
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, From, Into)]
