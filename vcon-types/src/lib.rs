@@ -32,7 +32,7 @@ pub use extension_object::ExtensionObject;
 pub use {
     address::CivicAddress,
     analysis::AnalysisObject,
-    attachment::AttachmentObject,
+    attachment::Attachment,
     body::InlineContent,
     content::{Content, ContentParameters, UrlReferencedContent},
     date::Date,
@@ -107,7 +107,7 @@ pub struct Vcon {
     #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
     pub dialog: Option<Vec<DialogObject>>,
     #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
-    pub attachments: Option<Vec<AttachmentObject>>,
+    pub attachments: Option<Vec<Attachment>>,
     #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
     pub analysis: Option<Vec<AnalysisObject>>,
     #[cfg(ser)]
