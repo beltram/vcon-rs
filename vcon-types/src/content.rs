@@ -1,5 +1,6 @@
 use crate::{InlineContent, Mime, Signature, Url};
 use derive_more::{From, Into};
+use crate::signature::SignatureAlg;
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq)]
 #[cfg_attr(ser, derive(serde::Serialize), serde(untagged))]
@@ -49,6 +50,8 @@ impl<'de> serde::Deserialize<'de> for Content {
                         BodyEncoding::Base64Url => {
                             let body = <String as serde::Deserialize>::deserialize(body)
                                 .map_err(A::Error::custom)?;
+                            
+                            use base64::Engine as _;
                             let body = InlineContent::B64
                                 .decode(body.as_bytes())
                                 .map_err(A::Error::custom)?;

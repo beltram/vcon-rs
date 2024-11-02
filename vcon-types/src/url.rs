@@ -50,9 +50,7 @@ use derive_more::{Deref, DerefMut, Into};
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Into, Deref, DerefMut)]
 #[cfg_attr(ser, derive(serde::Serialize, serde::Deserialize), serde(transparent))]
 #[repr(transparent)]
-pub struct Url {
-    url: url::Url,
-}
+pub struct Url(url::Url);
 
 impl std::str::FromStr for Url {
     type Err = Box<dyn core::error::Error>;
@@ -62,6 +60,6 @@ impl std::str::FromStr for Url {
         if url.scheme() != "https" {
             return Err("Url scheme MUST be 'https'".into());
         }
-        Ok(Self { url })
+        Ok(Self(url))
     }
 }
