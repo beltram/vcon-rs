@@ -110,7 +110,10 @@ impl serde::Serialize for InlineContent {
                 bb.serialize_entry("encoding", &BodyEncoding::None)?;
                 bb.serialize_entry("body", &body)?;
             }
-            InlineContent::TextJson(_) => unimplemented!(),
+            InlineContent::TextJson(body) => {
+                bb.serialize_entry("encoding", &BodyEncoding::Json)?;
+                bb.serialize_entry("body", &body)?;
+            }
         }
         use serde::ser::SerializeMap as _;
         bb.end()
@@ -186,7 +189,12 @@ impl<'de> serde::Deserialize<'de> for InlineContent {
                             Self::Value::TextNone(value)
                         }
                     }
-                    BodyEncoding::Json => unimplemented!(),
+                    BodyEncoding::Json => {
+                        let (_, value) = map
+                            .next_entry::<String, String>()?
+                            .ok_or(A::Error::custom("Invalid Body serialization"))?;
+                        Self::Value::TextJson(value)
+                    }
                 })
             }
         }

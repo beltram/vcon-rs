@@ -9,7 +9,6 @@ const EXAMPLES: [&'static str; 1] = [
 ];
 
 #[test]
-#[ignore]
 fn json_examples_should_work() {
     for example in EXAMPLES {
         let deser = serde_json::from_str::<Vcon>(example).unwrap();
