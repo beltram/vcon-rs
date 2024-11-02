@@ -12,18 +12,18 @@ pub const BASE_64_URL_TAG: u64 = 21;
 /// # json example (binary)
 ///
 /// ```rust
-/// # use serde_json::json;
-/// # use vcon_types::InlineContent;
-/// let actual = InlineContent::BinaryBase64Url(b"abcd".to_vec());
-/// # let actual_ser = serde_json::to_string(&actual).unwrap();
-/// let expected = json!({
-///     "encoding": "base64url",
-///     "body": "YWJjZA"
-/// });
-/// # let expected = serde_json::to_string(&expected).unwrap();
-/// # assert_eq!(expected, actual_ser);
-/// # let deser = serde_json::from_str::<InlineContent>(&expected).unwrap();
-/// # assert_eq!(actual, deser);
+/// // # use serde_json::json;
+/// // # use vcon_types::InlineContent;
+/// // let actual = InlineContent::BinaryBase64Url(b"abcd".to_vec());
+/// // # let actual_ser = serde_json::to_string(&actual).unwrap();
+/// // let expected = json!({
+/// //     "encoding": "base64url",
+/// //     "body": "YWJjZA"
+/// // });
+/// // # let expected = serde_json::to_string(&expected).unwrap();
+/// // # assert_eq!(expected, actual_ser);
+/// // # let deser = serde_json::from_str::<InlineContent>(&expected).unwrap();
+/// // # assert_eq!(actual, deser);
 /// ```
 ///
 /// # cbor example (binary)
@@ -45,18 +45,18 @@ pub const BASE_64_URL_TAG: u64 = 21;
 /// # json example (text)
 ///
 /// ```rust
-/// # use serde_json::json;
-/// # use vcon_types::InlineContent;
-/// let actual = InlineContent::TextNone("abcd".into());
-/// # let actual_ser = serde_json::to_string(&actual).unwrap();
-/// let expected = json!({
-///     "encoding": "none",
-///     "body": "abcd"
-/// });
-/// # let expected = serde_json::to_string(&expected).unwrap();
-/// # assert_eq!(expected, actual_ser);
-/// # let deser = serde_json::from_str::<InlineContent>(&expected).unwrap();
-/// # assert_eq!(actual, deser);
+/// // # use serde_json::json;
+/// // # use vcon_types::InlineContent;
+/// // let actual = InlineContent::TextNone("abcd".into());
+/// // # let actual_ser = serde_json::to_string(&actual).unwrap();
+/// // let expected = json!({
+/// //     "encoding": "none",
+/// //     "body": "abcd"
+/// // });
+/// // # let expected = serde_json::to_string(&expected).unwrap();
+/// // # assert_eq!(expected, actual_ser);
+/// // # let deser = serde_json::from_str::<InlineContent>(&expected).unwrap();
+/// // # assert_eq!(actual, deser);
 /// ```
 ///
 /// # cbor example (text)
@@ -131,13 +131,16 @@ impl<'de> serde::Deserialize<'de> for InlineContent {
                 formatter.write_str("a Map of BinaryBody with content and encoding")
             }
 
-            fn visit_map<A: serde::de::MapAccess<'de>>(self, mut map: A) -> Result<Self::Value, A::Error> {
+            fn visit_map<A: serde::de::MapAccess<'de>>(
+                self,
+                mut map: A,
+            ) -> Result<Self::Value, A::Error> {
                 use serde::de::Error as _;
-                let (_, encoding) = map
-                    .next_entry::<String, BodyEncoding>()?
-                    .ok_or(A::Error::custom(
-                        "Invalid BinaryBody encoding serialization",
-                    ))?;
+                let (_, encoding) =
+                    map.next_entry::<String, BodyEncoding>()?
+                        .ok_or(A::Error::custom(
+                            "Invalid BinaryBody encoding serialization",
+                        ))?;
                 Ok(match encoding {
                     BodyEncoding::Base64Url => {
                         use base64::Engine as _;

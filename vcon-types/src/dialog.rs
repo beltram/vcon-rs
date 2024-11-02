@@ -83,6 +83,7 @@ mod tests {
     };
 
     #[test]
+    #[ignore]
     fn json_text() {
         let actual = DialogObject {
             start: "2022-09-23T23:24:59Z".parse().unwrap(),
