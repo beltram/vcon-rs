@@ -21,7 +21,7 @@ pub struct PartyObject {
     pub gmlpos: Option<String>,
     #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
     pub civic_address: Option<CivicAddress>,
-    #[cfg_attr(ser, serde(flatten, skip_serializing_if = "Option::is_none"))]
+    #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
     pub uuid: Option<Uuid>,
     #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
     pub role: Option<String>,

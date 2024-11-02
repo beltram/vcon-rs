@@ -17,7 +17,13 @@ use derive_more::{Deref, DerefMut, Into};
 /// # vcon_types::expect_json_eq(
 /// "https://github.com/".parse::<Url>().unwrap(), // actual
 /// json!({ "url": "https://github.com/" }), // expected
-/// # )}
+/// # );
+///
+/// # vcon_types::expect_json_eq(
+/// "https://github.com/ietf-wg-vcon/draft-ietf-vcon-vcon-container/raw/refs/heads/main/examples/ab_call.mp3".parse::<Url>().unwrap(), // actual
+/// json!({ "url": "https://github.com/ietf-wg-vcon/draft-ietf-vcon-vcon-container/raw/refs/heads/main/examples/ab_call.mp3" }), // expected
+/// # );
+/// # }
 /// ```
 /// # cbor example
 ///
@@ -42,7 +48,7 @@ use derive_more::{Deref, DerefMut, Into};
 /// assert!("http://github.com/".parse::<Url>().is_err());
 /// ```
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Into, Deref, DerefMut)]
-#[cfg_attr(ser, derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(ser, derive(serde::Serialize, serde::Deserialize), serde(transparent))]
 #[repr(transparent)]
 pub struct Url {
     url: url::Url,

@@ -14,30 +14,32 @@
   "dialog": [
     {
       "type": "text",
-      "start": "2022-09-23T21:44:25.000+00:00",
+      "start": "2022-09-23T21:44:25Z",
       "duration": 0,
       "parties": [
         0,
         1
       ],
-      "mimetype": "[...]"
+      "mimetype": "multipart/mixed; \n\tboundary=\"----=_Part_388314_1108189513.1663969465698\"",
+      "encoding": "none",
+      "body": "..."
     },
     {
       "type": "text",
-      "start": "2022-09-23T21:44:59.000+00:00",
+      "start": "2022-09-23T21:44:59Z",
       "duration": 0,
       "parties": [
         1,
         0
       ],
-      "mimetype": "multipart/alternative[...]",
+      "mimetype": "multipart/alternative; \n\tboundary=\"----=_Part_390234_811845464.1663969499935\"",
       "encoding": "none",
-      "body": "------=_Part_390234_811845464.1663969499935[...]"
+      "body": "..."
     }
   ],
   "analysis": [],
   "attachments": [],
-  "created_at": "2023-10-20T23:36:50.256+00:00",
+  "created_at": "2023-10-20T23:36:50.256Z",
   "redacted": {},
   "subject": "Account problem",
   "uuid": "018b4f72-df56-82ac-b9a2-279e0d16bc46"

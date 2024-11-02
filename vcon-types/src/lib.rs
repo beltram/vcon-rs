@@ -31,7 +31,7 @@ pub use doc::expect_json_eq;
 pub use extension_object::ExtensionObject;
 pub use {
     address::CivicAddress,
-    analysis::AnalysisObject,
+    analysis::Analysis,
     attachment::Attachment,
     body::InlineContent,
     content::{Content, ContentParameters, UrlReferencedContent},
@@ -77,14 +77,13 @@ compile_error!("feature \"cbor\" and feature \"json\" cannot be enabled at the s
 
 type PartyIndex = u32;
 
-#[derive(Debug, Clone, Hash, Eq, PartialEq, derive_more::From, derive_more::Into)]
+#[derive(Debug, Clone, PartialEq, derive_more::From, derive_more::Into)]
 #[cfg_attr(ser, derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(feature = "builder", derive(derive_builder::Builder))]
 pub struct Vcon {
     #[cfg_attr(feature = "builder", builder(setter(into)))]
     #[cfg_attr(ser, serde(flatten))]
     pub version: VconVersion,
-    #[cfg_attr(ser, serde(flatten))]
     pub uuid: Uuid,
     #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
     pub subject: Option<String>,
@@ -109,10 +108,10 @@ pub struct Vcon {
     #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
     pub attachments: Option<Vec<Attachment>>,
     #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
-    pub analysis: Option<Vec<AnalysisObject>>,
-    #[cfg(ser)]
-    #[cfg_attr(ser, serde(flatten))]
-    pub extension_object: ExtensionObject,
+    pub analysis: Option<Vec<Analysis>>,
+    // #[cfg(ser)]
+    // #[cfg_attr(ser, serde(flatten))]
+    // pub extension_object: ExtensionObject,
 }
 
 /// Flatten at declaration site
@@ -125,3 +124,18 @@ pub enum OrEmpty<T> {
     #[cfg(feature = "cbor")]
     None(CborAnyValue),
 }
+
+/*#[cfg(ser)]
+pub mod serde_float {
+
+    pub fn serialize<S: serde::Serializer>(f: &f32, serializer: S) -> Result<S::Ok, S::Error> {
+        let serializer = serde_json::Serializer::with_formatter(serializer.into_inner(), FloatFormatter);
+        serde::Serialize::serialize(f, serializer)
+    }
+
+    pub fn deserialize<'de, D: serde::Deserializer<'de>>(deserializer: D) -> Result<f32, D::Error> {
+        let f = <f32 as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(f)
+    }
+}
+*/

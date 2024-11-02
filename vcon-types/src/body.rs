@@ -82,7 +82,7 @@ pub enum InlineContent {
 }
 
 impl InlineContent {
-    const B64: base64::engine::GeneralPurpose = base64::prelude::BASE64_URL_SAFE_NO_PAD;
+    pub(crate) const B64: base64::engine::GeneralPurpose = base64::prelude::BASE64_URL_SAFE_NO_PAD;
 }
 
 #[cfg(ser)]
@@ -204,7 +204,7 @@ impl<'de> serde::Deserialize<'de> for InlineContent {
 }
 
 #[derive(Debug, Clone, Copy, Hash, Eq, PartialEq)]
-pub(crate) enum BodyEncoding {
+pub enum BodyEncoding {
     Base64Url,
     None,
     Json,

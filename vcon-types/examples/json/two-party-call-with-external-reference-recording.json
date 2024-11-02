@@ -13,20 +13,20 @@
   "dialog": [
     {
       "type": "recording",
-      "start": "2022-06-21T17:53:26.000+00:00",
-      "duration": 4.72,
+      "start": "2022-06-21T17:53:26Z",
+      "duration": 33.12,
       "parties": [
         0,
         1
       ],
-      "url": "https://raw.githubusercontent.com/dgpetrie/draft-peetrie-vcon/main/examples/ab_call.wav",
-      "mimetype": "audio/x-wav",
-      "filename": "ab_call.wav",
-      "signature": "Re9R7UWKaD7yN9kxoYLbFFNSKU8XfH18NFbTc3AgT4_aBBubMtvGUEtRmP6XUxSS3Nl4LU-1mOCtezoTHQ67cVQ",
+      "url": "https://github.com/ietf-wg-vcon/draft-ietf-vcon-vcon-container/raw/refs/heads/main/examples/ab_call.mp3",
+      "mimetype": "audio/x-mp3",
+      "filename": "ab_call.mp3",
+      "signature": "GLy6IPaIUM1GqzZqfIPZlWjaDsNgNvZM0iCONNThnH0a75fhUM6cYzLZ5GynSURREvZwmOh54-2lRRieyj82UQ",
       "alg": "SHA-512"
     }
   ],
   "analysis": [],
   "attachments": [],
-  "uuid": "018b4f72-d0e7-8d8e-b9a2-279e0d16bc46"
+  "uuid": "01928d46-fd43-8c6b-b9a2-279e0d16bc46"
 }

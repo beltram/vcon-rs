@@ -7,12 +7,10 @@ pub type DialogIndex = u32;
 ///
 /// See
 /// - https://ietf-wg-vcon.github.io/draft-ietf-vcon-vcon-container/draft-ietf-vcon-vcon-container.html#name-dialog-object
-#[derive(Debug, Clone, Hash, Eq, PartialEq, From, Into)]
+#[derive(Debug, Clone, PartialEq, From, Into)]
 #[cfg_attr(ser, derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(feature = "builder", derive(derive_builder::Builder))]
 pub struct DialogObject {
-    #[cfg_attr(ser, serde(flatten))]
-    pub dialog: Dialog,
     pub start: Date,
     #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
     pub party_history: Option<Vec<PartyEvent>>,
@@ -20,12 +18,14 @@ pub struct DialogObject {
     pub campaign: Option<String>,
     #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
     pub interaction: Option<String>,
+    #[cfg_attr(ser, serde(flatten))]
+    pub dialog: Dialog,
     /*#[cfg(ser)]
     #[cfg_attr(ser, serde(flatten))]
     pub extension_object: crate::ExtensionObject,*/
 }
 
-#[derive(Debug, Clone, Hash, Eq, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(
     ser,
     derive(serde::Serialize, serde::Deserialize),
@@ -34,7 +34,7 @@ pub struct DialogObject {
 pub enum Dialog {
     Recording {
         #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
-        duration: Option<u32>,
+        duration: Option<Duration>,
         parties: DialogParties,
         #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
         originator: Option<PartyIndex>,
@@ -45,7 +45,7 @@ pub enum Dialog {
     },
     Text {
         #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
-        duration: Option<u32>,
+        duration: Option<Duration>,
         parties: DialogParties,
         #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
         originator: Option<PartyIndex>,
@@ -73,6 +73,13 @@ pub enum Dialog {
 pub enum DialogParties {
     Index(PartyIndex),
     List(Vec<PartyIndex>),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(ser, derive(serde::Serialize, serde::Deserialize), serde(untagged))]
+pub enum Duration {
+    Int(u32),
+    Float(f32),
 }
 
 #[cfg(test)]

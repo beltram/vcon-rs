@@ -25,7 +25,6 @@ pub enum VconReference {
         inline_content: InlineContent,
     },
     Uuid {
-        #[cfg_attr(ser, serde(flatten))]
         uuid: Uuid,
     },
 }

@@ -29,10 +29,7 @@ use derive_more::{Deref, DerefMut, From, Into};
 /// ```
 #[derive(Debug, Clone, Hash, Eq, PartialEq, From, Into, Deref, DerefMut)]
 #[cfg_attr(ser, derive(serde::Serialize, serde::Deserialize), serde(transparent))]
-pub struct Date {
-    #[cfg_attr(ser, serde(with = "time::serde::rfc3339"))]
-    date: time::OffsetDateTime,
-}
+pub struct Date(#[cfg_attr(ser, serde(with = "time::serde::rfc3339"))] time::OffsetDateTime);
 
 impl std::str::FromStr for Date {
     type Err = Box<dyn std::error::Error>;
@@ -40,6 +37,6 @@ impl std::str::FromStr for Date {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let date = time::OffsetDateTime::parse(s, &time::format_description::well_known::Rfc3339)
             .map_err(|e| Box::<dyn std::error::Error>::from(format!("{e:?}")))?;
-        Ok(Self { date })
+        Ok(Self(date))
     }
 }

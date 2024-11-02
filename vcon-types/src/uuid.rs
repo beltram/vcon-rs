@@ -4,10 +4,6 @@ use derive_more::{Deref, DerefMut, Into};
 ///
 /// See https://ietf-wg-vcon.github.io/draft-ietf-vcon-vcon-container/draft-ietf-vcon-vcon-container.html#name-uuid
 ///
-/// # Usage
-///
-/// `#[serde(flatten)]` at declaration site
-///
 /// # json example
 ///
 /// ```rust
@@ -32,12 +28,9 @@ use derive_more::{Deref, DerefMut, Into};
 /// # )}
 /// ```
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Into, Deref, DerefMut)]
-#[cfg_attr(ser, derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(ser, derive(serde::Serialize, serde::Deserialize), serde(transparent))]
 #[repr(transparent)]
-pub struct Uuid {
-    #[cfg_attr(feature = "cbor", serde(with = "hyphenated"))]
-    uuid: uuid::Uuid,
-}
+pub struct Uuid(#[cfg_attr(feature = "cbor", serde(with = "hyphenated"))] uuid::Uuid);
 
 // overcomes troubles with cbor because in uuid serde_support a &str is expected whereas only a String works
 pub mod hyphenated {
@@ -62,8 +55,6 @@ pub mod hyphenated {
 
 impl Uuid {
     pub fn new(udf: [u8; 16]) -> Self {
-        Self {
-            uuid: uuid::Uuid::new_v8(udf),
-        }
+        Self(uuid::Uuid::new_v8(udf))
     }
 }

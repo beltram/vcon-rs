@@ -1,3 +1,5 @@
+use base64::Engine;
+
 /// Signature
 ///
 /// TODO: supposedly SHA-512 and base64Url encoded, discuss before implementing
@@ -120,7 +122,6 @@ impl<'de> serde::Deserialize<'de> for Signature {
                 self,
                 mut map: A,
             ) -> Result<Self::Value, A::Error> {
-                use base64::Engine as _;
                 use serde::de::Error as _;
 
                 let (_, alg) = map
@@ -129,32 +130,43 @@ impl<'de> serde::Deserialize<'de> for Signature {
                 let (_, signature) = map
                     .next_entry::<String, String>()?
                     .ok_or(A::Error::custom("Invalid BinaryBody content serialization"))?;
-                let signature = Signature::B64
-                    .decode(signature.as_bytes())
-                    .map_err(|_| A::Error::custom("Signature not Base64 encoded"))?;
-                Ok(match alg {
-                    SignatureAlg::Sha256 => Self::Value::Sha256 {
-                        signature: signature.try_into().map_err(|_| {
-                            A::Error::custom("Expected a SHA-256 signature to be 32 bytes long")
-                        })?,
-                    },
-                    SignatureAlg::Sha384 => {
-                        let signature = signature.try_into().map_err(|_| {
-                            A::Error::custom("Expected a SHA-384 signature to be 48 bytes long")
-                        })?;
-                        Self::Value::Sha384 { signature }
-                    }
-                    SignatureAlg::Sha512 => {
-                        let signature = signature.try_into().map_err(|_| {
-                            A::Error::custom("Expected a SHA-512 signature to be 64 bytes long")
-                        })?;
-                        Self::Value::Sha512 { signature }
-                    }
-                })
+                (alg, signature)
+                    .try_into()
+                    .map_err(|_| A::Error::custom("Invalid Signature"))
             }
         }
 
         deserializer.deserialize_map(SignatureVisitor)
+    }
+}
+
+impl TryFrom<(SignatureAlg, String)> for Signature {
+    type Error = Box<dyn std::error::Error>;
+
+    fn try_from((alg, signature): (SignatureAlg, String)) -> Result<Self, Self::Error> {
+        let signature = Signature::B64
+            .decode(signature.as_bytes())
+            .map_err(|_| Self::Error::from("Signature not Base64 encoded"))?;
+        Ok(match alg {
+            SignatureAlg::Sha256 => {
+                let signature = signature.try_into().map_err(|_| {
+                    Self::Error::from("Expected a SHA-256 signature to be 32 bytes long")
+                })?;
+                Signature::Sha256 { signature }
+            }
+            SignatureAlg::Sha384 => {
+                let signature = signature.try_into().map_err(|_| {
+                    Self::Error::from("Expected a SHA-384 signature to be 48 bytes long")
+                })?;
+                Signature::Sha384 { signature }
+            }
+            SignatureAlg::Sha512 => {
+                let signature = signature.try_into().map_err(|_| {
+                    Self::Error::from("Expected a SHA-512 signature to be 64 bytes long")
+                })?;
+                Signature::Sha512 { signature }
+            }
+        })
     }
 }
 
@@ -194,7 +206,7 @@ impl std::str::FromStr for Signature {
 }
 
 #[derive(Debug, Copy, Clone)]
-enum SignatureAlg {
+pub(crate) enum SignatureAlg {
     Sha256,
     Sha384,
     Sha512,
