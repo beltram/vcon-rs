@@ -39,7 +39,7 @@ pub use {
     dialog::{Dialog, DialogIndex, DialogObject, DialogParties},
     event::{Event, PartyEvent},
     mime::Mime,
-    party::PartyObject,
+    party::Party,
     reference::{RedactedReference, VconReference},
     signature::Signature,
     url::Url,
@@ -102,7 +102,7 @@ pub struct Vcon {
     #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
     pub group: Option<Vec<VconReference>>,
     #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
-    pub parties: Option<Vec<PartyObject>>,
+    pub parties: Option<Vec<Party>>,
     #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
     pub dialog: Option<Vec<DialogObject>>,
     #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
