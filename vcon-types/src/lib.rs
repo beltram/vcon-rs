@@ -124,18 +124,3 @@ pub enum OrEmpty<T> {
     #[cfg(feature = "cbor")]
     None(CborAnyValue),
 }
-
-/*#[cfg(ser)]
-pub mod serde_float {
-
-    pub fn serialize<S: serde::Serializer>(f: &f32, serializer: S) -> Result<S::Ok, S::Error> {
-        let serializer = serde_json::Serializer::with_formatter(serializer.into_inner(), FloatFormatter);
-        serde::Serialize::serialize(f, serializer)
-    }
-
-    pub fn deserialize<'de, D: serde::Deserializer<'de>>(deserializer: D) -> Result<f32, D::Error> {
-        let f = <f32 as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(f)
-    }
-}
-*/
