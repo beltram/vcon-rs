@@ -40,3 +40,10 @@ impl From<&str> for VconVersion {
         s.to_string().into()
     }
 }
+
+/// See https://www.ietf.org/archive/id/draft-petrie-vcon-04.html#section-4.1.1-2.1.2
+impl Default for VconVersion {
+    fn default() -> Self {
+        "0.0.1".into()
+    }
+}

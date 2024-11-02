@@ -81,6 +81,7 @@ type PartyIndex = u32;
 #[cfg_attr(ser, derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(feature = "builder", derive(derive_builder::Builder))]
 pub struct Vcon {
+    #[cfg_attr(feature = "builder", builder(setter(into)))]
     #[cfg_attr(ser, serde(flatten))]
     pub version: VconVersion,
     #[cfg_attr(ser, serde(flatten))]

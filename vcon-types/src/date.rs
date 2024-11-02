@@ -7,27 +7,25 @@ use derive_more::{Deref, DerefMut, From, Into};
 /// # json example
 ///
 /// ```rust
-/// # use serde_json::json;
+/// # #[cfg(feature = "json")] {
 /// # use vcon_types::Date;
-/// let actual = "2022-09-23T23:24:59Z".parse::<Date>().unwrap();
-/// # let actual_ser = serde_json::to_string(&actual).unwrap();
-/// let expected = json!("2022-09-23T23:24:59Z");
-/// # let expected = serde_json::to_string(&expected).unwrap();
-/// # assert_eq!(expected, actual_ser);
-/// # let deser = serde_json::from_str::<Date>(&expected).unwrap();
-/// # assert_eq!(actual, deser);
+/// # use serde_json::json;
+/// # vcon_types::expect_json_eq(
+/// "2022-09-23T23:24:59Z".parse::<Date>().unwrap(), // actual
+/// json!("2022-09-23T23:24:59Z"), // expected
+/// # )}
 /// ```
 /// # cbor example
 ///
 /// ```rust
-/// # use ciborium::Value;
+/// # #[cfg(feature = "cbor")] {
 /// # use vcon_types::Date;
-/// let actual = "2022-09-23T23:24:59Z".parse::<Date>().unwrap();
-/// # let actual_ser = Value::serialized(&actual).unwrap();
-/// let expected = Value::Text("2022-09-23T23:24:59Z".into());
-/// # assert_eq!(expected, actual_ser);
-/// # let deser = Value::deserialized::<Date>(&actual_ser).unwrap();
-/// # assert_eq!(actual, deser);
+/// # use ciborium::cbor;
+/// # vcon_types::expect_cbor_eq(
+/// "2022-09-23T23:24:59Z".parse::<Date>().unwrap(), // actual
+/// cbor!("2022-09-23T23:24:59Z") // expected
+/// # .unwrap(),
+/// # )}
 /// ```
 #[derive(Debug, Clone, Hash, Eq, PartialEq, From, Into, Deref, DerefMut)]
 #[cfg_attr(ser, derive(serde::Serialize, serde::Deserialize), serde(transparent))]
