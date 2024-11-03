@@ -86,7 +86,8 @@ pub enum InlineContent {
 }
 
 impl InlineContent {
-    pub(crate) const B64: base64::engine::GeneralPurpose = base64::prelude::BASE64_URL_SAFE_NO_PAD;
+    /// Base64 encoding in use
+    pub const B64: base64::engine::GeneralPurpose = base64::prelude::BASE64_URL_SAFE_NO_PAD;
 }
 
 #[cfg(ser)]

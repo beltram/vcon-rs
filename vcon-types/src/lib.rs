@@ -12,6 +12,7 @@ mod date;
 mod dialog;
 #[cfg(feature = "doctest")]
 mod doc;
+mod error;
 mod event;
 mod mime;
 mod party;
@@ -34,6 +35,7 @@ pub use {
     content::{Content, ContentParameters, UrlReferencedContent},
     date::Date,
     dialog::{Dialog, DialogIndex, DialogObject, DialogParties, Duration},
+    error::{VconError, VconResult},
     event::{Event, PartyEvent},
     mime::Mime,
     party::Party,
