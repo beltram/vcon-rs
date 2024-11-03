@@ -13,7 +13,6 @@ mod dialog;
 #[cfg(feature = "doctest")]
 mod doc;
 mod event;
-mod extension_object;
 mod mime;
 mod party;
 mod reference;
@@ -27,8 +26,6 @@ pub use doc::expect_cbor_eq;
 #[cfg(all(feature = "doctest", feature = "json"))]
 pub use doc::expect_json_eq;
 
-#[cfg(ser)]
-pub use extension_object::ExtensionObject;
 pub use {
     address::CivicAddress,
     analysis::Analysis,
@@ -36,7 +33,7 @@ pub use {
     body::InlineContent,
     content::{Content, ContentParameters, UrlReferencedContent},
     date::Date,
-    dialog::{Dialog, DialogIndex, DialogObject, DialogParties},
+    dialog::{Dialog, DialogIndex, DialogObject, DialogParties, Duration},
     event::{Event, PartyEvent},
     mime::Mime,
     party::Party,
@@ -109,9 +106,9 @@ pub struct Vcon {
     pub attachments: Option<Vec<Attachment>>,
     #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
     pub analysis: Option<Vec<Analysis>>,
-    // #[cfg(ser)]
-    // #[cfg_attr(ser, serde(flatten))]
-    // pub extension_object: ExtensionObject,
+    #[cfg(json)]
+    #[cfg_attr(json, serde(flatten))]
+    pub extension_object: crate::JsonAnyValue,
 }
 
 /// Flatten at declaration site

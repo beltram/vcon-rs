@@ -20,9 +20,6 @@ pub struct DialogObject {
     pub interaction: Option<String>,
     #[cfg_attr(ser, serde(flatten))]
     pub dialog: Dialog,
-    /*#[cfg(ser)]
-    #[cfg_attr(ser, serde(flatten))]
-    pub extension_object: crate::ExtensionObject,*/
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -86,7 +83,7 @@ pub enum Duration {
 mod tests {
     use serde_json::json;
     use vcon_types::{
-        Content, ContentParameters, Dialog, DialogObject, DialogParties, InlineContent,
+        Content, ContentParameters, Dialog, DialogObject, DialogParties, Duration, InlineContent,
     };
 
     #[test]
@@ -98,7 +95,7 @@ mod tests {
             campaign: Default::default(),
             interaction: Default::default(),
             dialog: Dialog::Text {
-                duration: Some(0),
+                duration: Some(Duration::Int(0)),
                 parties: DialogParties::List(vec![0, 1]),
                 content_parameters: ContentParameters {
                     mime: Some("text/plain".to_string().into()),

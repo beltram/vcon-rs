@@ -1,5 +1,3 @@
-#[cfg(ser)]
-use crate::ExtensionObject;
 use crate::{Content, ContentParameters, Date, PartyIndex};
 use derive_more::{From, Into};
 
@@ -15,7 +13,7 @@ pub struct Attachment {
     pub content_parameters: ContentParameters,
     #[cfg_attr(ser, serde(flatten))]
     pub content: Content,
-    #[cfg(ser)]
-    #[cfg_attr(ser, serde(flatten))]
-    pub extension_object: ExtensionObject,
+    #[cfg(json)]
+    #[cfg_attr(json, serde(flatten))]
+    pub extension_object: crate::JsonAnyValue,
 }

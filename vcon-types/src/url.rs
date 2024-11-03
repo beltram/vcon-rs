@@ -16,12 +16,12 @@ use derive_more::{Deref, DerefMut, Into};
 /// # use serde_json::json;
 /// # vcon_types::expect_json_eq(
 /// "https://github.com/".parse::<Url>().unwrap(), // actual
-/// json!({ "url": "https://github.com/" }), // expected
+/// json!("https://github.com/"), // expected
 /// # );
 ///
 /// # vcon_types::expect_json_eq(
 /// "https://github.com/ietf-wg-vcon/draft-ietf-vcon-vcon-container/raw/refs/heads/main/examples/ab_call.mp3".parse::<Url>().unwrap(), // actual
-/// json!({ "url": "https://github.com/ietf-wg-vcon/draft-ietf-vcon-vcon-container/raw/refs/heads/main/examples/ab_call.mp3" }), // expected
+/// json!("https://github.com/ietf-wg-vcon/draft-ietf-vcon-vcon-container/raw/refs/heads/main/examples/ab_call.mp3"), // expected
 /// # );
 /// # }
 /// ```

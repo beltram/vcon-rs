@@ -1,5 +1,3 @@
-#[cfg(ser)]
-use crate::ExtensionObject;
 use derive_more::{From, Into};
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, From, Into)]
@@ -40,7 +38,7 @@ pub struct CivicAddress {
     pub nam: Option<String>,
     #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
     pub pc: Option<String>,
-    #[cfg(ser)]
-    #[cfg_attr(ser, serde(flatten))]
-    pub extension_object: ExtensionObject,
+    #[cfg(json)]
+    #[cfg_attr(json, serde(flatten))]
+    pub extension_object: crate::JsonAnyValue,
 }

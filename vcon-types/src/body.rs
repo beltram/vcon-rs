@@ -29,6 +29,7 @@ pub const BASE_64_URL_TAG: u64 = 21;
 /// # cbor example (binary)
 ///
 /// ```rust
+/// # #[cfg(feature = "cbor")] {
 /// # use ciborium::Value;
 /// # use vcon_types::InlineContent;
 /// let actual = InlineContent::BinaryBase64Url(b"abcd".to_vec());
@@ -40,6 +41,7 @@ pub const BASE_64_URL_TAG: u64 = 21;
 /// # assert_eq!(expected, actual_ser);
 /// # let deser = Value::deserialized::<InlineContent>(&actual_ser).unwrap();
 /// # assert_eq!(actual, deser);
+/// # }
 /// ```
 ///
 /// # json example (text)
@@ -62,6 +64,7 @@ pub const BASE_64_URL_TAG: u64 = 21;
 /// # cbor example (text)
 ///
 /// ```rust
+/// # #[cfg(feature = "cbor")] {
 /// # use ciborium::Value;
 /// # use vcon_types::InlineContent;
 /// let actual = InlineContent::TextNone("abcd".into());
@@ -73,6 +76,7 @@ pub const BASE_64_URL_TAG: u64 = 21;
 /// # assert_eq!(expected, actual_ser);
 /// # let deser = Value::deserialized::<InlineContent>(&actual_ser).unwrap();
 /// # assert_eq!(actual, deser);
+/// # }
 /// ```
 #[derive(Debug, Clone, Hash, Eq, PartialEq)]
 pub enum InlineContent {

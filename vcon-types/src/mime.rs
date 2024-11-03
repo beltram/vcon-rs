@@ -22,6 +22,7 @@ use derive_more::{Deref, DerefMut, From, Into};
 /// # cbor example
 ///
 /// ```rust
+/// # #[cfg(feature = "cbor")] {
 /// # use ciborium::Value;
 /// # use vcon_types::Mime;
 /// let actual = Mime::from("text/plain".to_string());
@@ -30,6 +31,7 @@ use derive_more::{Deref, DerefMut, From, Into};
 /// # assert_eq!(expected, actual_ser);
 /// # let deser = Value::deserialized::<Mime>(&actual_ser).unwrap();
 /// # assert_eq!(actual, deser);
+/// # }
 /// ```
 #[derive(Debug, Clone, Hash, Eq, PartialEq, From, Into, Deref, DerefMut)]
 #[cfg_attr(ser, derive(serde::Serialize, serde::Deserialize))]

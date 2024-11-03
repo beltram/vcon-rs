@@ -12,7 +12,7 @@ use derive_more::{Deref, DerefMut, Into};
 /// # use serde_json::json;
 /// # vcon_types::expect_json_eq(
 /// Uuid::new(*b"abcdefghijklmnop"), // actual
-/// json!({ "uuid": "61626364-6566-8768-a96a-6b6c6d6e6f70" }), // expected
+/// json!("61626364-6566-8768-a96a-6b6c6d6e6f70"), // expected
 /// # )}
 /// ```
 /// # cbor example

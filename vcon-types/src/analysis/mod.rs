@@ -17,9 +17,9 @@ pub struct Analysis {
     pub schema: Option<String>,
     #[cfg_attr(ser, serde(skip_serializing_if = "Option::is_none"))]
     pub product: Option<String>,
-    // #[cfg(ser)]
-    // #[cfg_attr(ser, serde(flatten))]
-    // pub extension_object: ExtensionObject,
+    #[cfg(json)]
+    #[cfg_attr(json, serde(flatten))]
+    pub extension_object: crate::JsonAnyValue,
 }
 
 #[derive(Debug, Clone, PartialEq, From, Into)]

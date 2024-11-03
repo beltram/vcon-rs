@@ -1,5 +1,3 @@
-#[cfg(ser)]
-use crate::ExtensionObject;
 use crate::{Date, PartyIndex};
 use derive_more::{From, Into};
 
@@ -10,9 +8,9 @@ pub struct PartyEvent {
     pub party: PartyIndex,
     pub event: Event,
     pub time: Date,
-    #[cfg(ser)]
-    #[cfg_attr(ser, serde(flatten))]
-    pub extension_object: ExtensionObject,
+    #[cfg(json)]
+    #[cfg_attr(json, serde(flatten))]
+    pub extension_object: crate::JsonAnyValue,
 }
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq)]

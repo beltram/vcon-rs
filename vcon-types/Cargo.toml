@@ -26,12 +26,12 @@ ciborium = { version = "0.2", optional = true }
 ryu = "1.0"
 
 [dev-dependencies]
-vcon-types = { path = "./", features = ["json", "doctest"] }
+vcon-types = { path = "./", features = ["doctest"] }
 serde_json = { version = "1.0", features = ["float_roundtrip"] }
 assert-json-diff = { git = "https://github.com/JonathanMurray/assert-json-diff.git", branch = "master" }
 
 [features]
-default = ["serde", "builder"]
+default = ["serde", "builder", "json"]
 builder = ["dep:derive_builder"]
 json = ["serde", "dep:serde_json"]
 cbor = ["serde", "dep:ciborium"]
